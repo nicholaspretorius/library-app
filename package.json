@@ -1,0 +1,29 @@
+{
+  "name": "library-app",
+  "version": "0.0.1",
+  "description": "A node.js and Express library application to manage your books",
+  "main": "app.js",
+  "scripts": {
+    "start": "DEBUG=app nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint app.js"
+  },
+  "keywords": [
+    "node.js",
+    "express"
+  ],
+  "author": "Nicholas Pretorius",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "2.3.2",
+    "debug": "3.1.0",
+    "express": "4.16.3",
+    "morgan": "1.9.0"
+  },
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.9.0",
+    "nodemon": "1.17.2"
+  }
+}
