@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0, shrink-to-fit=no")
+        meta(http-equiv="X-UA-Compatible", content="ie=edge")
+        title Library Application
+        link(href="/css/bootstrap.min.css" rel="stylesheet")
+        
+    body
+        div.container
+            h3= title
+            div.alert.alert-primary Testing
+        
+        div.container
+            ul
+                each val in list
+                    li= val
+
+        script(src="/js/jquery-3.2.1.slim.min.js")
+        script(src="/js/popper.min.js")
+        script(src="/js/bootstrap.min.js")
