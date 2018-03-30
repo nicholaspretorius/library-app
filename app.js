@@ -3,6 +3,10 @@ const chalk = require('chalk'); // sets colours on console messages
 const morgan = require('morgan'); // logs the http verbs
 const debug = require('debug')('app');
 const path = require('path'); // builds up valid pathnames to avoid the __dirname concat issue
+const bodyParser = require('body-parser');
+const passport = require('passport');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
 // const sql = require('mssql');
 
 const app = express();
@@ -23,11 +27,20 @@ const nav = [
   { title: 'Books', link: '/books' }, 
   { title: 'Authors', link: '/authors' }
 ];
-
 const bookRouter = require('./src/routes/bookRoutes.js')(nav);
+const adminRouter = require('./src/routes/adminRoutes.js')(nav);
+const authRouter = require('./src/routes/authRoutes.js')(nav);
 
 app.use(morgan('tiny'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(session({ secret: 'library', resave: true, saveUninitialized: true }));
+
+require('./src/config/passport.js')(app);
+
 app.use(express.static(path.join(__dirname, '/public/'))); // set the location for static files
+
 app.set('views', path.join(__dirname, '/src/views/'));
 app.set('view engine', 'ejs');
 
@@ -36,6 +49,8 @@ app.set('view engine', 'ejs');
 // app.use('/js', express.static(path.join(__dirname, '/node_modules/bootstrap/dist/js')));
 
 app.use('/books', bookRouter);
+app.use('/admin', adminRouter);
+app.use('/auth', authRouter);
 
 app.get('/', (req, res) => {
   // res.send("<h1>Hello world!</h1>");
