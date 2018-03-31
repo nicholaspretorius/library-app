@@ -1,5 +1,7 @@
 const express = require('express');
 const { MongoClient, ObjectID } = require('mongodb');
+const bookController = require('../controllers/bookController');
+const bookService = require('../services/goodReadsService');
 
 const bookRouter = express.Router();
 
@@ -7,55 +9,14 @@ const bookRouter = express.Router();
 const debug = require('debug')('app:bookRoutes');
 
 function router(nav) {
-  // const books = [
-  //   { title: 'The Dark Tower', author: 'Stephen King', genre: 'Horror' },
-  //   { title: 'The Stand', author: 'Stephen King', genre: 'Horror' },
-  //   { title: 'The Lord of the Rings', author: 'JRR Tolkien', genre: 'Fantasy' },
-  //   { title: 'Jurassic Park', author: 'Michael Crichton', genre: 'Sci-Fi' }
-  // ];
-  bookRouter.use((req, res, next) => {
-    if (req.user) {
-      next();
-    } else {
-      res.redirect('/auth/signin');
-    }
-  });
+  const { getIndex, getById, middleware } = bookController(bookService, nav);
+  bookRouter.use(middleware);
 
   bookRouter.route('/')
-    .get((req, res) => {
-      const url = 'mongodb://localhost:27017';
-      const dbName = 'libraryApp';
-      (async function mongo() {
-        let client;
-        try {
-          client = await MongoClient.connect(url);
-          debug('Connected to MongoDB');
-
-          const db = client.db(dbName);
-          const books = await db.collection('books').find().toArray();
-          // res.json(response);
-          res.render('books', {
-            title: 'Books',
-            nav,
-            books
-            // books: recordset // see recordset in debug messages in console 
-          });
-        } catch (err) {
-          debug(err.stack);
-        }
-        client.close();
-      }());
-      // (async function query() {
-      //   const request = new sql.Request();
-        
-      //   const { recordset } = await request.query('select * from books');
-      //   debug(recordset);
-    });
-  // }());
-  
+    .get(getIndex);
   
   bookRouter.route('/:bid')
-    // middleware to catch all ids
+    /* middleware to catch all ids
     // .all((req, res, next) => {
     //   (async function query() {
     //     const { bid } = req.params; // object destructuring - same as const bid = req.params.bid
@@ -66,32 +27,8 @@ function router(nav) {
     //     [req.book] = recordset; // array destructuring - same as req.book = recordset[0];
     //     next(); // req.book now added to the req and passed through next();
     //   }());
-    // })
-    .get((req, res) => {
-      const { bid } = req.params;
-      const url = 'mongodb://localhost:27017';
-      const dbName = 'libraryApp';
-      
-      (async function mongo() {
-        let client;
-        try {
-          client = await MongoClient.connect(url);
-          debug('Connected to MongoDB');
-
-          const db = client.db(dbName);
-          const book = await db.collection('books').findOne({ _id: new ObjectID(bid) });
-          debug(book);
-          res.render('book', {
-            nav,
-            book
-            // book: req.book
-          });
-        } catch (err) {
-          debug(err.stack);
-        }
-        client.close();
-      }());
-    });
+    }) */
+    .get(getById);
 
   return bookRouter;
 }
